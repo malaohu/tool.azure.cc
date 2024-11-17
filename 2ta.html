@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="zh">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>2FA验证码生成器 - 蔚蓝工具</title>
+	<meta name="keywords" content="2FA, 双因素认证, 2FA验证码生成, TOTP, Google Authenticator, 在线工具, 安全验证">
+	<meta name="description" content="通过蔚蓝工具的2FA验证码生成器，轻松生成基于时间的一次性验证码（TOTP）。支持Google Authenticator等主流应用，提供更安全的账户保护方案。">
+	<meta name="author" content="蔚蓝工具">
+	<link href="./static/css/tabler.min.css" rel="stylesheet" />
+	<link favicon href="./favicon.png" rel="shortcut icon">
+	<style>
+		.container {
+			max-width: 400px;
+			width: 100%;
+			padding: 20px;
+			border-radius: 10px;
+			background: #fff;
+			box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+		}
+
+		.code-display {
+			font-size: 2em;
+			margin: 20px 0;
+		}
+
+		.timer {
+			font-size: 1em;
+			color: #888;
+		}
+
+		.qr-code {
+			margin: 20px auto;
+			display: flex;
+			justify-content: center;
+		}
+
+		.language-toggle {
+			margin-bottom: 20px;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="page">
+
+		<header class="navbar navbar-expand-md navbar-light d-print-none">
+			<div class="container-xl">
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu"
+					aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+					<a href=".">
+						<img src="./logo-x.png"
+							width="110" height="32" alt="Tabler" class="navbar-brand-image">
+					</a>
+				</h1>
+
+			</div>
+		</header>
+		<br>
+
+		<div class="container card">
+			<div class="card-body">
+				<div class="language-toggle text-center">
+					<button class="btn btn-outline-primary mx-1" onclick="switchLanguage('en')">English</button>
+					<button class="btn btn-outline-primary mx-1" onclick="switchLanguage('zh')">中文</button>
+				</div>
+				<h2 id="title" class="card-title text-center mb-4">2FA Code Generator</h2>
+				<div class="mb-3">
+					<label for="secret" id="secret-label" class="form-label">Enter your secret key:</label>
+					<input type="text" id="secret" class="form-control" placeholder="e.g. JBSWY3DPEHPK3PXP">
+				</div>
+				<div class="text-center">
+					<button id="start-button" class="btn btn-primary mb-3" onclick="startGenerating()">Start Generating
+						Code</button>
+				</div>
+				<div class="code-display text-center card-subtitle" id="code">------</div>
+				<div class="text-center">
+					<button id="copy-button" class="btn btn-outline-secondary mb-3" onclick="copyCode()">Copy Code</button>
+				</div>
+				<div class="timer text-center" id="timer">Time remaining: 30 seconds</div>
+				<div class="qr-code" id="qrcode"></div>
+				<div class="timer text-center" id="tips">Time remaining: 30 seconds</div>
+			</div>
+		</div>
+
+		<div class=" container-xl card mt-4">
+			<div class="card-body">
+				<h3>什2FA（双因素认证）？</h3>
+				<p>
+					双因素认证（2FA）是一种安全过程，要求用户在访问帐户或服务时提供两种不同类型的身份验证信息。通常，2FA将两种认证方式结合在一起：
+				</p>
+				<ul>
+					<li>第一种是用户知道的内容，例如密码或PIN码。</li>
+					<li>第二种是用户拥有的物品，例如手机生成的一次性验证码。</li>
+				</ul>
+				<p>
+					使用2FA可以显著提高账户安全性，因为即使密码泄露，攻击者也无法访问账户，除非他们同时持有第二种认证方式的设备（如验证码生成器或移动设备）。本工具可以生成基于时间的一次性验证码（TOTP），并支持与Google
+					Authenticator等应用程序兼容的密钥格式。
+				</p>
+			</div>
+		</div>
+
+		<footer class="footer footer-transparent d-print-none">
+			<div class="container-xl">
+				<div class="row text-center align-items-center flex-row-reverse">
+					<div class="col-lg-auto ms-lg-auto">
+						<ul class="list-inline list-inline-dots mb-0">
+						</ul>
+					</div>
+					<div class="col-12 col-lg-auto mt-3 mt-lg-0">
+						<ul class="list-inline list-inline-dots mb-0">
+							<li class="list-inline-item">
+								Copyright &copy; 2024
+								<a href="Azure.cc" class="link-secondary" target="_blank">Azure.cc</a>.
+								All rights reserved.
+							</li>
+							<li class="list-inline-item">Powered by <a href="https://tabler.io" target="_blank"
+									class="link-secondary">Tabler</a></li>
+							<li class="list-inline-item">By <a href="http://51.RUYO.net" target="_blank"
+									class="link-secondary">如有乐享</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</footer>
+		<script src="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/jsSHA/3.2.0/sha.min.js"
+			type="application/javascript"></script>
+		<script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"
+			type="application/javascript"></script>
+		<script>
+			let interval;
+			let language = 'zh';
+			const translations = {
+				en: {
+					title: '2FA Code Generator',
+					secretLabel: 'Enter your secret key:',
+					startButton: 'Start Generating Code',
+					timeRemaining: 'Time remaining: ',
+					seconds: ' seconds',
+					tips: 'You can add the secret key to your authenticator app using a QR code.',
+					copy: 'Copy Code'
+
+				},
+				zh: {
+					title: '2FA 验证码生成器',
+					secretLabel: '请输入您的密钥：',
+					startButton: '开始生成验证码',
+					timeRemaining: '剩余时间：',
+					seconds: ' 秒',
+					tips: '可使用类似Google Authenticator等App扫码添加密钥。',
+					copy: '复制验证码'
+				}
+			};
+
+			document.addEventListener('DOMContentLoaded', () => {
+				const urlParams = new URLSearchParams(window.location.search);
+				const secretFromUrl = urlParams.get('secret');
+				if (secretFromUrl) {
+					document.getElementById('secret').value = secretFromUrl;
+					generateQRCode(secretFromUrl);
+					startGenerating();
+				}
+			});
+
+			function switchLanguage(lang) {
+				language = lang;
+				document.getElementById('title').innerText = translations[lang].title;
+				document.getElementById('secret-label').innerText = translations[lang].secretLabel;
+				document.getElementById('start-button').innerText = translations[lang].startButton;
+				document.getElementById('tips').innerText = translations[lang].tips;
+				document.getElementById('copy-button').innerText = translations[lang].copy;
+				updateTimerDisplay(30);
+			}
+
+			function startGenerating() {
+				const secret = document.getElementById('secret').value.trim();
+				if (!secret) {
+					alert(language === 'en' ? 'Please enter a valid secret key.' : '请输入有效的密钥。');
+					return;
+				}
+				generateQRCode(secret);
+				if (interval) clearInterval(interval);
+				generateCode(secret);
+				interval = setInterval(() => generateCode(secret), 1000);
+			}
+
+			function generateCode(secret) {
+				const epoch = Math.floor(Date.now() / 1000);
+				const timeStep = 30;
+				const counter = Math.floor(epoch / timeStep);
+				const key = base32ToHex(secret);
+				const counterHex = leftPad(decToHex(counter), 16, '0');
+
+				const hmac = new jsSHA('SHA-1', 'HEX');
+				hmac.setHMACKey(key, 'HEX');
+				hmac.update(counterHex);
+				const hmacResult = hmac.getHMAC('HEX');
+
+				const offset = hexToDec(hmacResult.slice(-1));
+				const binary =
+					(hexToDec(hmacResult.substr(offset * 2, 8)) & 0x7fffffff) + '';
+				const otp = binary.substr(binary.length - 6, 6);
+
+				document.getElementById('code').innerText = otp;
+				const remaining = timeStep - (epoch % timeStep);
+				updateTimerDisplay(remaining);
+			}
+
+			function updateTimerDisplay(remaining) {
+				document.getElementById('timer').innerText = `${translations[language].timeRemaining}${remaining}${translations[language].seconds}`;
+			}
+
+			function generateQRCode(secret) {
+				const otpauthUrl = `otpauth://totp/2FA-Code-Generator?secret=${secret}`;
+				document.getElementById('qrcode').innerHTML = "";
+				new QRCode(document.getElementById('qrcode'), {
+					text: otpauthUrl,
+					width: 128,
+					height: 128
+				});
+			}
+
+			function decToHex(dec) {
+				return (dec < 15.5 ? '0' : '') + Math.round(dec).toString(16);
+			}
+
+			function hexToDec(hex) {
+				return parseInt(hex, 16);
+			}
+
+			function base32ToHex(base32) {
+				const base32chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+				let bits = '';
+				let hex = '';
+
+				for (let i = 0; i < base32.length; i++) {
+					const val = base32chars.indexOf(base32.charAt(i).toUpperCase());
+					bits += leftPad(val.toString(2), 5, '0');
+				}
+
+				for (let i = 0; i + 4 <= bits.length; i += 4) {
+					const chunk = bits.substr(i, 4);
+					hex = hex + parseInt(chunk, 2).toString(16);
+				}
+
+				return hex;
+			}
+
+			function leftPad(str, len, pad) {
+				return (new Array(len + 1).join(pad) + str).slice(-len);
+			}
+
+			function copyCode() {
+				const code = document.getElementById('code').innerText;
+				if (code && code !== '------') {
+					navigator.clipboard.writeText(code).then(() => {
+						alert(language === 'en' ? 'Code copied to clipboard!' : '验证码已复制到剪贴板！');
+					}).catch(err => {
+						alert(language === 'en' ? 'Failed to copy code.' : '复制验证码失败。');
+					});
+				} else {
+					alert(language === 'en' ? 'No code to copy.' : '无验证码可复制。');
+				}
+			}
+
+			switchLanguage('zh');
+		</script>
+
+</body>
+
+</html>
