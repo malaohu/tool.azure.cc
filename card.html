@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="zh">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+	<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+	<title>信用卡在线生成 - 蔚蓝工具</title>
+	<meta name="keywords" content="信用卡生成器, 在线生成信用卡, BIN生成, 虚拟信用卡工具, Luhn算法, 安全验证">
+	<meta name="description" content="使用蔚蓝工具的信用卡在线生成器，快速生成符合Luhn算法的信用卡号码，包括有效期和CVV，仅供教育和测试用途。">
+	<meta name="author" content="蔚蓝工具">
+	<link href="https://tool.azure.cc/static/css/tabler.min.css" rel="stylesheet" />
+	<link favicon href="https://tool.azure.cc/favicon.png" rel="shortcut icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .header {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        input, button, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .output {
+            margin-top: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 10px;
+            font-size: 14px;
+        }
+        .description {
+            font-size: 14px;
+            margin-bottom: 20px;
+            color: #555;
+            text-align: center;
+        }
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            padding: 10px 0;
+            background-color: #343a40;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+	<div class="page">
+
+		<header class="navbar navbar-expand-md navbar-light d-print-none">
+			<div class="container-xl">
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu"
+					aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+					<a href=".">
+						<img src="https://tool.azure.cc/logo-x.png"
+							width="110" height="32" alt="蔚蓝工具" class="navbar-brand-image">
+					</a>
+				</h1>
+
+			</div>
+		</header>
+		<br>
+
+		<div class="container card">
+			<div class="card-body">
+                    <h2 class="card-title text-center mb-4 h2">使用Luhn算法生成信用卡信息</h2>
+                    <p class="description">通过输入有效的BIN号、有效期和CVV，快速生成测试用的信用卡信息。本工具仅供教育用途。</p>
+                    
+                    <label for="bin">输入BIN号（6-19位数字）：</label>
+                    <input type="text" id="bin" maxlength="19" placeholder="例如：222100">
+            
+                    <label for="quantity">生成卡片的数量：</label>
+                    <input type="number" id="quantity" min="1" value="1">
+            
+                    <button onclick="generateCards()">生成</button>
+            
+                    <div class="output">
+                        <h2>生成的卡片</h2>
+                        <textarea id="output" readonly placeholder="生成的卡片信息将显示在这里..."></textarea>
+                    </div>
+               
+            
+			</div>
+		</div>
+
+		<div class=" container-xl card mt-4">
+			<div class="card-body">
+				<h3>什么是Luhn算法？</h3>
+				<p>
+                    Luhn算法，也称为模10算法，是一种简单的校验算法，广泛用于验证信用卡号、IMEI号码等标识码的有效性。
+                    其基本原理是将待验证的数字从右至左逐一处理，奇数位数字直接累加，偶数位数字先乘以2，如果结果大于9则减去9，
+                    最终将所有数字相加，若总和能够被10整除，则说明该数字符合Luhn算法规则。
+                </p>
+			</div>
+		</div>
+
+		<footer class="footer footer-transparent d-print-none">
+			<div class="container-xl">
+				<div class="row text-center align-items-center flex-row-reverse">
+					<div class="col-lg-auto ms-lg-auto">
+						<ul class="list-inline list-inline-dots mb-0">
+						</ul>
+					</div>
+					<div class="col-12 col-lg-auto mt-3 mt-lg-0">
+						<ul class="list-inline list-inline-dots mb-0">
+							<li class="list-inline-item">
+								Copyright &copy; 2024
+								<a href="Azure.cc" class="link-secondary" target="_blank">Azure.cc</a>.
+								All rights reserved.
+							</li>
+							<li class="list-inline-item">Powered by <a href="https://tabler.io" target="_blank"
+									class="link-secondary">Tabler</a></li>
+							<li class="list-inline-item">By <a href="http://51.RUYO.net" target="_blank"
+									class="link-secondary">如有乐享</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</footer>
+
+        <script>
+            // Function to get URL parameters
+            function getURLParam(key) {
+                const params = new URLSearchParams(window.location.search);
+                return params.get(key);
+            }
+    
+            // Function to generate a random number within a range
+            function randomNumber(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+    
+            // Function to generate the Luhn checksum digit
+            function generateLuhnChecksum(partialCardNumber) {
+                let sum = 0;
+                let shouldDouble = false;
+    
+                for (let i = partialCardNumber.length - 1; i >= 0; i--) {
+                    let digit = parseInt(partialCardNumber[i]);
+    
+                    if (shouldDouble) {
+                        digit *= 2;
+                        if (digit > 9) digit -= 9;
+                    }
+    
+                    sum += digit;
+                    shouldDouble = !shouldDouble;
+                }
+    
+                return (10 - (sum % 10)) % 10;
+            }
+    
+            // Function to generate a credit card number using Luhn algorithm
+            function generateCardNumber(bin) {
+                const additionalLength = 16 - bin.length; // Ensure card number is 16 digits
+                let partialCardNumber = bin + Array(additionalLength - 1).fill(0).map(() => randomNumber(0, 9)).join('');
+                let checksum = generateLuhnChecksum(partialCardNumber);
+                return partialCardNumber + checksum;
+            }
+    
+            // Function to generate expiration date (MM/YY)
+            function generateExpiryDate() {
+                const month = randomNumber(1, 12).toString().padStart(2, '0');
+                const year = (new Date().getFullYear() % 100 + randomNumber(1, 5)).toString();
+                return `${month}/${year}`;
+            }
+    
+            // Function to generate CVV
+            function generateCVV() {
+                return randomNumber(100, 999).toString();
+            }
+    
+            // Main function to generate cards
+            function generateCards() {
+                const bin = document.getElementById('bin').value || getURLParam('bin');
+                const quantity = parseInt(document.getElementById('quantity').value) || parseInt(getURLParam('quantity')) || 1;
+                const output = document.getElementById('output');
+    
+                if (!bin || bin.length < 6 || bin.length > 19 || isNaN(bin)) {
+                    alert('请输入6到19位的有效BIN号。');
+                    return;
+                }
+    
+                if (quantity < 1 || isNaN(quantity)) {
+                    alert('请输入有效的生成数量。');
+                    return;
+                }
+    
+                let cards = '';
+    
+                for (let i = 0; i < quantity; i++) {
+                    const cardNumber = generateCardNumber(bin);
+                    const expiryDate = generateExpiryDate();
+                    const cvv = generateCVV();
+                    cards += `${cardNumber} | ${expiryDate} | ${cvv}\n`;
+                }
+    
+                output.value = cards.trim();
+            }
+    
+            // Prepopulate fields and auto-generate if URL parameters exist
+            window.onload = function () {
+                const bin = getURLParam('bin');
+                const quantity = getURLParam('count');
+    
+                if (bin) document.getElementById('bin').value = bin;
+                if (quantity) document.getElementById('quantity').value = quantity;
+    
+                if (bin && quantity) generateCards();
+            };
+        </script>
+</body>
+
+</html>
